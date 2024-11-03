@@ -1,6 +1,6 @@
 import SearchForm from "@/components/SearchForm";
-import StartupCard from "@/components/StartupCard";
-import { client } from "@/sanity/lib/client";
+import StartupCard, { StartupTypeCard } from "@/components/StartupCard";
+import { SanityLive, sanityFetch } from "@/sanity/lib/live";
 import { STARTUPS_QUERY } from "@/sanity/lib/queries";
 
 export default async function Home({
@@ -9,26 +9,10 @@ export default async function Home({
   searchParams: Promise<{ query?: string }>;
 }) {
   const query = (await searchParams).query;
+  const params = { search: query || null };
 
-  const posts = await client.fetch(STARTUPS_QUERY);
-  console.log(JSON.stringify(posts), null, 2);
+  const { data: posts } = await sanityFetch({ query: STARTUPS_QUERY, params });
 
-  // const posts = [
-  //   {
-  //     _createdAt: new Date(),
-  //     views: 55,
-  //     author: {
-  //       _id: 1,
-  //       name: "Alexander Van Drak",
-  //     },
-  //     _id: 1,
-  //     description: "This is a description",
-  //     image:
-  //       "https://is1-ssl.mzstatic.com/image/thumb/Features123/v4/3b/7c/8a/3b7c8aa1-cc00-fed2-e77a-9d78e56ba43e/mzl.awyyerno.png/1200x675mf.jpg",
-  //     category: "Robots",
-  //     title: "We Robots",
-  //   },
-  // ];
   return (
     <>
       <section className="pink_container">
@@ -57,6 +41,8 @@ export default async function Home({
           )}
         </ul>
       </section>
+
+      <SanityLive />
     </>
   );
 }
